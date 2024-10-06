@@ -22,3 +22,4 @@ spec:
     syncOptions:
     - ApplyOutOfSyncOnly=true
     - ServerSideApply=true
+

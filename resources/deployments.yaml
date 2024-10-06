@@ -1,0 +1,172 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flaresolverr
+  namespace: flaresolverr
+  labels:
+    app.kubernetes.io/instance: "flaresolverr"
+    app.kubernetes.io/name: "flaresolverr"
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: flaresolverr
+      app.kubernetes.io/instance: flaresolverr
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: flaresolverr
+        app.kubernetes.io/name: flaresolverr"
+    spec:
+      serviceAccountName: flaresolverr
+      automountServiceAccountToken: false
+      runtimeClassName:
+      hostNetwork: false
+      hostPID: false
+      hostIPC: false
+      shareProcessNamespace: false
+      enableServiceLinks: false
+      restartPolicy: Always
+      dnsPolicy: ClusterFirst
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+      terminationGracePeriodSeconds: 60
+      securityContext:
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups:
+          - 568
+        sysctls: []
+      hostUsers: true
+      containers:
+        - name: flaresolverr
+          image: ghcr.io/flaresolverr/flaresolverr:v3.3.21@sha256:f104ee51e5124d83cf3be9b37480649355d223f7d8f9e453d0d5ef06c6e3b31b
+          imagePullPolicy: IfNotPresent
+          tty: false
+          stdin: false
+          ports:
+            - name: main
+              containerPort: 8191
+              protocol: TCP
+              hostPort: null
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: false
+            - name: devshm
+              mountPath: /dev/shm
+              readOnly: false
+            - name: shared
+              mountPath: /shared
+              readOnly: false
+            - name: tmp
+              mountPath: /tmp
+              readOnly: false
+            - name: varlogs
+              mountPath: /var/logs
+              readOnly: false
+            - name: varrun
+              mountPath: /var/run
+              readOnly: false
+          livenessProbe:
+            httpGet:
+              port: 8191
+              path: /
+              scheme: HTTP
+            initialDelaySeconds: 12
+            failureThreshold: 5
+            successThreshold: 1
+            timeoutSeconds: 5
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              port: 8191
+              path: /
+              scheme: HTTP
+            initialDelaySeconds: 10
+            failureThreshold: 4
+            successThreshold: 2
+            timeoutSeconds: 5
+            periodSeconds: 12
+          startupProbe:
+            httpGet:
+              port: 8191
+              path: /
+              scheme: HTTP
+            initialDelaySeconds: 10
+            failureThreshold: 60
+            successThreshold: 1
+            timeoutSeconds: 3
+            periodSeconds: 5
+          resources:
+            limits:
+              cpu: 4000m
+              memory: 2Gi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: false
+            privileged: false
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              add: []
+              drop:
+                - ALL
+          env:
+            - name: "TZ"
+              value: "America/Detroit"
+            - name: "UMASK"
+              value: "0022"
+            - name: "UMASK_SET"
+              value: "0022"
+            - name: "NVIDIA_VISIBLE_DEVICES"
+              value: "void"
+            - name: "S6_READ_ONLY_ROOT"
+              value: "1"
+            - name: "BROWSER_TIMEOUT"
+              value: "40000"
+            - name: "CAPTCHA_SOLVER"
+              value: "none"
+            - name: "HEADLESS"
+              value: "true"
+            - name: "HOST"
+              value: "0.0.0.0"
+            - name: "LOG_HTML"
+              value: "false"
+            - name: "LOG_LEVEL"
+              value: "info"
+            - name: "PORT"
+              value: "8191"
+            - name: "TEST_URL"
+              value: "https://www.google.com"
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: flaresolverr-config
+        - name: devshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi
+        - name: shared
+          emptyDir: {}
+        - name: tmp
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi
+        - name: varlogs
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi
+        - name: varrun
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi
