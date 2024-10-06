@@ -5,8 +5,8 @@ metadata:
   name: flaresolverr
   namespace: flaresolverr
   labels:
-    app.kubernetes.io/instance: "flaresolverr"
-    app.kubernetes.io/name: "flaresolverr"
+    app.kubernetes.io/instance: flaresolverr
+    app.kubernetes.io/name: flaresolverr
 spec:
   replicas: 1
   revisionHistoryLimit: 3
@@ -20,7 +20,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/instance: flaresolverr
-        app.kubernetes.io/name: flaresolverr"
+        app.kubernetes.io/name: flaresolverr
     spec:
       serviceAccountName: flaresolverr
       automountServiceAccountToken: false
