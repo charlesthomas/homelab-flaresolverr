@@ -103,10 +103,7 @@ spec:
             successThreshold: 1
             timeoutSeconds: 3
             periodSeconds: 5
-          resources:
-            limits:
-              cpu: 4000m
-              memory: 2Gi
+          resources: {}
           securityContext:
             runAsNonRoot: true
             runAsUser: 1000
