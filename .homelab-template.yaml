@@ -14,6 +14,7 @@ resources:
 - deployments.yaml
 - pvcs.yaml
 - services.yaml
+- service-accounts.yaml
 service: false
 serviceAccount: false
 upstreamURL: https://github.com/FlareSolverr/FlareSolverr

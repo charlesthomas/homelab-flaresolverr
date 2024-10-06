@@ -30,6 +30,7 @@ spec:
       hostIPC: false
       shareProcessNamespace: false
       enableServiceLinks: false
+      hostUsers: false
       restartPolicy: Always
       dnsPolicy: ClusterFirst
       dnsConfig:

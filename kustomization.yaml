@@ -13,3 +13,4 @@ resources:
 - resources/namespaces.yaml
 - resources/pvcs.yaml
 - resources/services.yaml
+- resources/service-accounts.yaml
