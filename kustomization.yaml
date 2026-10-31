@@ -5,8 +5,10 @@ namespace: flaresolverr
 
 commonAnnotations:
   repo: https://github.com/charlesthomas/homelab-flaresolverr
-commonLabels:
-  app: flaresolverr
+labels:
+- includeSelectors: true
+  pairs:
+    app: flaresolverr
 
 resources:
 - resources/deployments.yaml
@@ -14,3 +16,12 @@ resources:
 - resources/pvcs.yaml
 - resources/services.yaml
 - resources/service-accounts.yaml
+
+configMapGenerator:
+- name: grafana-dashboard-flaresolverr
+  files:
+  - grafana/flaresolverr.json
+  options:
+    disableNameSuffixHash: true
+    labels:
+      grafana_dashboard: "1"
