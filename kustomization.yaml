@@ -5,8 +5,10 @@ namespace: flaresolverr
 
 commonAnnotations:
   repo: https://github.com/charlesthomas/homelab-flaresolverr
-commonLabels:
-  app: flaresolverr
+labels:
+- includeSelectors: true
+  pairs:
+    app: flaresolverr
 
 resources:
 - resources/deployments.yaml
